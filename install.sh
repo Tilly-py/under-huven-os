@@ -38,15 +38,15 @@ sudo apt install -y \
     htop \
     tree \
     stress \
-    xcfe4-terminal
+    xfce4-terminal
 
-echo "[4/7] Creating Python virtual enviroment..."
+echo "[4/7] Creating Python virtual environment..."
 cd "$PROJECT_DIR"
 
 if [ ! -d "venv" ]; then
     python3 -m venv venv
 else
-    echo "Virtual enviroment already exists, skipping..."
+    echo "Virtual environment already exists, skipping..."
 fi
 
 echo "[5/7] Installing Python dependencies..."
@@ -75,7 +75,6 @@ Categories=Utility;
 EOF
 
 cat > "$DESKTOP_DIR/Live-Dashboard.desktop" <<EOF
-
 [Desktop Entry]
 Version=1.0
 Type=Application
@@ -122,3 +121,30 @@ Icon=utilities-system-monitor
 Terminal=false
 Categories=Utility;
 EOF
+
+chmod +x "$DESKTOP_DIR/Under-Huven-OS.desktop"
+chmod +x "$DESKTOP_DIR/Live-Dashboard.desktop"
+chmod +x "$DESKTOP_DIR/CPU-Stress-Test.desktop"
+chmod +x "$DESKTOP_DIR/RAM-Stress-Test.desktop"
+chmod +x "$DESKTOP_DIR/System-Monitor.desktop"
+
+echo "[7/7] Testing Installation..."
+
+python3 -c "import rich, psutil; print('Python dependencies OK')"
+
+
+
+echo ""
+echo "======================================"
+echo " Installation complete!"
+echo "======================================"
+echo ""
+echo "Desktop launchers created in:"
+echo "$DESKTOP_DIR"
+echo ""
+echo "You can now run:"
+echo "cd $PROJECT_DIR"
+echo "source venv/bin/activate"
+echo "python app.py"
+echo ""
+echo "Or double-click the desktop icons."
