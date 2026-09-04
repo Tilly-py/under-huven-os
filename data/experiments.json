@@ -1,0 +1,41 @@
+{
+  "cpu": {
+    "title": "CPU-test",
+    "explanation_key": "cpu",
+    "command": ["stress", "--cpu", "2", "--timeout", "15"],
+    "duration": 15,
+    "look_for": "CPU-procenten bör öka medan testet körs.",
+    "impacts": [
+      ["CPU", 3, "Processorn får mycket arbete."],
+      ["RAM", 1, "Lite minne används för att köra testet."],
+      ["Disk", 0, "Nästan inget skrivs till lagringen."],
+      ["Process", 2, "Programmet stress startas som en process."]
+    ]
+  },
+  "ram": {
+    "title": "RAM-test",
+    "explanation_key": "ram",
+    "command": ["stress", "--vm", "1", "--vm-bytes", "256M", "--timeout", "15"],
+    "duration": 15,
+    "look_for": "RAM-användningen bör öka medan testet körs.",
+    "impacts": [
+      ["CPU", 1, "Processorn hjälper till lite."],
+      ["RAM", 3, "Extra arbetsminne reserveras tillfälligt."],
+      ["Disk", 0, "Nästan inget skrivs till lagringen."],
+      ["Process", 2, "Programmet stress startas som en process."]
+    ]
+  },
+  "disk": {
+    "title": "Disk-test",
+    "explanation_key": "disk",
+    "duration": 15,
+    "size_mb": 64,
+    "look_for": "En tillfällig fil skrivs till disken och tas sedan bort.",
+    "impacts": [
+      ["CPU", 1, "Processorn arbetar lite när filen skapas."],
+      ["RAM", 1, "Lite minne används som buffert."],
+      ["Disk", 3, "En tillfällig fil skrivs till lagringen."],
+      ["Process", 1, "Python-processen gör arbetet."]
+    ]
+  }
+}
