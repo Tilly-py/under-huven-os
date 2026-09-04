@@ -67,8 +67,8 @@ def run_stress_command(command: list[str], duration: int) -> None:
             time.sleep(1)
             progress.update(task, advance=1)
 
-        process.wait()
-        console.print("\n[bold green]Klart.[\bold green]")
+    process.wait()
+    console.print("\n[bold green]Klart.[/bold green]")
 
 
 def run_command_experiment(experiment: dict) -> None:
@@ -76,7 +76,7 @@ def run_command_experiment(experiment: dict) -> None:
     Runs an experiment that is based on a shell command
     """
     title = experiment["title"]
-    explanation_key = experiment["explnation_key"]
+    explanation_key = experiment["explanation_key"]
     explanation = EXPLANATIONS[explanation_key]
     impacts = experiment["impacts"]
     command = experiment["command"]
@@ -96,7 +96,7 @@ def run_disk_experiment(experiment: dict) -> None:
     """
 
     title = experiment["title"]
-    explanation_key = experiment["explnation_key"]
+    explanation_key = experiment["explanation_key"]
     explanation = EXPLANATIONS[explanation_key]
     impacts = experiment["impacts"]
     size_mb = experiment["size_mb"]
