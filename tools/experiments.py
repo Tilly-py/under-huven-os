@@ -49,7 +49,11 @@ def run_stress_command(command: list[str], duration: int) -> None:
         )
         return
 
-    process = subprocess.Popen(command)
+    process = subprocess.Popen(
+        command,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
     with Progress(
         TextColumn("[bold cyan]{task.description}"),
@@ -106,8 +110,13 @@ def run_disk_experiment(experiment: dict) -> None:
     console.print(show_test_intro(title, explanation, impacts))
     console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
 
-    test_file = Path("/tmp/under-huven-disk-test.bin")
+    test_dir = Path("testdata")
+    test_dir.mkdir(exist_ok=True)
+    test_file = test_dir / "under-huven-disk-test.bin"
     chunk = b"0" * 1024 * 1024
+    delay = experiment.get("delay", 0)
+
+    disk_before = psutil.disk_usage("/")
 
     console.print(f"[bold yellow]Skriver:[/bold yellow] {size_mb} mb till {test_file}")
 
@@ -125,13 +134,22 @@ def run_disk_experiment(experiment: dict) -> None:
                     file.write(chunk)
                     progress.update(task, advance=1)
 
-        disk = psutil.disk_usage("/")
+                    if delay > 0:
+                        time.sleep(delay)
+
+        disk_after = psutil.disk_usage("/")
         console.print("\n[bold green]Klart.[/bold green]")
-        console.print(f"Diskanvändning just nu: [bold cyan]{disk.percent}%[/bold cyan]")
+        console.print(
+            f"Ledigt före: [cyan]{round(disk_before.free / (1024**3), 2)} GB[/cyan]"
+        )
+        console.print(
+            f"Ledigt efter: [cyan]{round(disk_after.free / (1024**3), 2)} GB[/cyan]"
+        )
 
     finally:
         if test_file.exists():
             test_file.unlink()
+
             console.print("[cyan]Testfilen togs bort igen.[/cyan]")
 
 

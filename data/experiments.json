@@ -19,7 +19,7 @@
     "duration": 15,
     "look_for": "RAM-användningen bör öka medan testet körs.",
     "impacts": [
-      ["CPU", 1, "Processorn hjälper till lite."],
+      ["CPU", 2, "Processorn arbetar tydligt när minne reserveras och hanteras"],
       ["RAM", 3, "Extra arbetsminne reserveras tillfälligt."],
       ["Disk", 0, "Nästan inget skrivs till lagringen."],
       ["Process", 2, "Programmet stress startas som en process."]
@@ -29,7 +29,8 @@
     "title": "Disk-test",
     "explanation_key": "disk",
     "duration": 15,
-    "size_mb": 64,
+    "size_mb": 512,
+    "delay": 0.03,
     "look_for": "En tillfällig fil skrivs till disken och tas sedan bort.",
     "impacts": [
       ["CPU", 1, "Processorn arbetar lite när filen skapas."],
