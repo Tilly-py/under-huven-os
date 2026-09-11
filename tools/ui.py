@@ -8,13 +8,9 @@ console = Console()
 
 def show_header():
     title = Text("Under Huven OS", style="bold cyan")
-    subtitle = Text("Computer Performance Monitor", style="bold green")
+    subtitle = Text("Visualisera CPU, RAM, disk och processer", style="bold green")
 
-    panel = Panel.fit(
-        f"{title}\n{subtitle}",
-        border_style="cyan",
-        padding=(1, 4)
-    )
+    panel = Panel.fit(f"{title}\n{subtitle}", border_style="cyan", padding=(1, 4))
     console.print(panel)
 
 
@@ -24,12 +20,13 @@ def show_menu():
     table.add_column("Val", style="bold yellow")
     table.add_column("Funktion", style="white")
 
-    table.add_row("[1]", "Show system information")
-    table.add_row("[2]", "Show CPU usage")
-    table.add_row("[3]", "Show memory usage")
-    table.add_row("[4]", "Show disk information")
-    table.add_row("[5]", "Live dashboard")
-    table.add_row("[6]", "Exit")
+    table.add_row("[1]", "Live dashboard")
+    table.add_row("[2]", "Kör experiment")
+    table.add_row("[3]", "Systeminformation")
+    table.add_row("[4]", "Visa CPU-användning")
+    table.add_row("[5]", "Visa minnesanvändning")
+    table.add_row("[6]", "Visa diskinformation")
+    table.add_row("[7]", "Avsluta")
 
     console.print(table)
 
