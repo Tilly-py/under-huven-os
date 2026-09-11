@@ -39,6 +39,7 @@ sudo apt install -y \
     tree \
     stress \
     xfce4-terminal
+chmod +x "$PROJECT_DIR/scripts/start-workshop.sh"
 
 echo "[4/7] Creating Python virtual environment..."
 cd "$PROJECT_DIR"
@@ -62,75 +63,62 @@ fi
 echo "[6/7] Creating desktop launchers..."
 mkdir -p "$DESKTOP_DIR"
 
-cat > "$DESKTOP_DIR/Under-Huven-OS.desktop" <<EOF
+cat > "$DESKTOP_DIR/1-Starta-Workshop.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Under Huven OS
-Comment=Start Under Huven OS
-Exec=xfce4-terminal --hold --working-directory=$PROJECT_DIR -e "bash -c 'source venv/bin/activate && python app.py'"
+Name=1. Starta Workshop
+Comment=Starta Under Huven OS med dashboard och experiment
+Exec=$PROJECT_DIR/scripts/start-workshop.sh
+Icon=utilities-system-monitor
+Terminal=false
+Categories=Utility;
+EOF
+
+cat > "$DESKTOP_DIR/2-Under-Huven-OS.desktop" <<EOF
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=2. Under Huven OS
+Comment=Starta huvudappen
+Exec=xfce4-terminal --hold --working-directory=$PROJECT_DIR --command "bash -c '$PROJECT_DIR/venv/bin/python $PROJECT_DIR/app.py'"
 Icon=utilities-terminal
 Terminal=false
 Categories=Utility;
 EOF
 
-cat > "$DESKTOP_DIR/Live-Dashboard.desktop" <<EOF
+cat > "$DESKTOP_DIR/3-Live-Dashboard.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Live Dashboard
-Comment=Start live system dashboard
-Exec=xfce4-terminal --hold --working-directory=$PROJECT_DIR -e "bash -c 'source venv/bin/activate && python dashboard.py'"
+Name=3. Live Dashboard
+Comment=Starta live system dashboard
+Exec=xfce4-terminal --hold --working-directory=$PROJECT_DIR --command "bash -c '$PROJECT_DIR/venv/bin/python $PROJECT_DIR/dashboard.py'"
 Icon=utilities-system-monitor
 Terminal=false
 Categories=Utility;
 EOF
 
-cat > "$DESKTOP_DIR/CPU-Stress-Test.desktop" <<EOF
+cat > "$DESKTOP_DIR/4-Systemmonitor.desktop" <<EOF
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=CPU Stress Test
-Comment=Stress CPU for 15 seconds
-Exec=xfce4-terminal --hold -e "bash -c 'echo Starting CPU stress test...; stress --cpu 2 --timeout 15; echo Done.; read -p \"Press Enter to close...\"'"
+Name=4. Systemmonitor
+Comment=Öppna btop systemmonitor
+Exec=xfce4-terminal --hold --command "btop"
 Icon=utilities-system-monitor
 Terminal=false
 Categories=Utility;
 EOF
 
-cat > "$DESKTOP_DIR/RAM-Stress-Test.desktop" <<EOF
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=RAM Stress Test
-Comment=Stress RAM for 15 seconds
-Exec=xfce4-terminal --hold -e "bash -c 'echo Starting RAM stress test...; stress --vm 1 --vm-bytes 256M --timeout 15; echo Done.; read -p \"Press Enter to close...\"'"
-Icon=utilities-system-monitor
-Terminal=false
-Categories=Utility;
-EOF
-
-cat > "$DESKTOP_DIR/System-Monitor.desktop" <<EOF
-[Desktop Entry]
-Version=1.0
-Type=Application
-Name=System Monitor
-Comment=Open htop system monitor
-Exec=xfce4-terminal --hold -e "htop"
-Icon=utilities-system-monitor
-Terminal=false
-Categories=Utility;
-EOF
-
-chmod +x "$DESKTOP_DIR/Under-Huven-OS.desktop"
-chmod +x "$DESKTOP_DIR/Live-Dashboard.desktop"
-chmod +x "$DESKTOP_DIR/CPU-Stress-Test.desktop"
-chmod +x "$DESKTOP_DIR/RAM-Stress-Test.desktop"
-chmod +x "$DESKTOP_DIR/System-Monitor.desktop"
+chmod +x "$DESKTOP_DIR/1-Starta-Workshop.desktop"
+chmod +x "$DESKTOP_DIR/2-Under-Huven-OS.desktop"
+chmod +x "$DESKTOP_DIR/3-Live-Dashboard.desktop"
+chmod +x "$DESKTOP_DIR/4-Systemmonitor.desktop"
 
 echo "[7/7] Testing Installation..."
 
-python3 -c "import rich, psutil; print('Python dependencies OK')"
+venv/bin/python -c "import rich, psutil; print('Python dependencies OK')"
 
 
 
