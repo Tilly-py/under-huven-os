@@ -11,17 +11,24 @@ from tools.byte_formater import bytes_to_gb
 
 console = Console()
 
+
 def create_usage_bar(label, percent):
     progress = Progress(
         TextColumn(f"[bold cyan]{label}[/bold cyan]"),
-        BarColumn(bar_width=30, complete_style="green", finished_style="green", pulse_style="green"),
+        BarColumn(
+            bar_width=30,
+            complete_style="green",
+            finished_style="green",
+            pulse_style="green",
+        ),
         TextColumn(f"[bold yellow]{percent}%[/bold yellow]"),
-        expand=False
+        expand=False,
     )
 
     task = progress.add_task(label, total=100)
     progress.update(task, completed=percent)
     return progress
+
 
 def get_dashboard():
     cpu_percent = psutil.cpu_percent(interval=None)
@@ -33,18 +40,16 @@ def get_dashboard():
     table.add_column(justify="left")
 
     table.add_row(
-        "[bold cyan]CPU Usage[/bold cyan]",
-        create_usage_bar("CPU", cpu_percent)
+        "[bold cyan]CPU Usage[/bold cyan]", create_usage_bar("CPU", cpu_percent)
     )
 
     table.add_row(
-        "[bold green]RAM Usage[/bold green]",
-        create_usage_bar("RAM", memory.percent)
+        "[bold green]RAM Usage[/bold green]", create_usage_bar("RAM", memory.percent)
     )
 
     table.add_row(
         "[bold magenta]DISK Usage[/bold magenta]",
-        create_usage_bar("DISK", disk.percent)
+        create_usage_bar("DISK", disk.percent),
     )
 
     info_table = Table(title="System Status", border_style="cyan")
@@ -72,6 +77,7 @@ def get_dashboard():
     layout.add_row(Panel(table, title="Live System Usage", border_style="green"))
     layout.add_row(info_table)
     return layout
+
 
 def show_live_dashboard():
     console.clear()
