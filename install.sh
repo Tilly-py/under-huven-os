@@ -44,8 +44,8 @@ chmod +x "$PROJECT_DIR/scripts/start-workshop.sh"
 echo "[4/7] Creating Python virtual environment..."
 cd "$PROJECT_DIR"
 
-if [ ! -d "venv" ]; then
-    python3 -m venv venv
+if [ ! -d "$PROJECT_DIR/venv" ]; then
+   sudo  python3 -m venv venv "$PROJECT_DIR/venv"
 else
     echo "Virtual environment already exists, skipping..."
 fi
@@ -53,11 +53,11 @@ fi
 echo "[5/7] Installing Python dependencies..."
 source venv/bin/activate
 
-if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
+if [ -f "$PROJECT_DIR/requirements.txt" ]; then
+    sudo "$PROJECT_DIR/venv/bin/pip" install \
+        -r "$PROJECT_DIR/requirements.txt"
 else
-    pip install rich psutil
-    pip freeze > requirements.txt
+    sudo "$PROJECT_DIR/venv/bin/pip" install rich psutil
 fi
 
 echo "[6/7] Creating desktop launchers..."

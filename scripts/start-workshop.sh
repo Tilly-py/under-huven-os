@@ -1,7 +1,7 @@
 #!/bin/bash
 
 PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-PYTHON ="$PROJECT_DIR/venv/bin/python"
+PYTHON="$PROJECT_DIR/venv/bin/python"
 
 
 if [ ! -x "$PYTHON" ]; then

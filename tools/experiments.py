@@ -110,8 +110,9 @@ def run_disk_experiment(experiment: dict) -> None:
     console.print(show_test_intro(title, explanation, impacts))
     console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
 
-    test_dir = Path("testdata")
+    test_dir = Path.home() / "UnderHuvenTest"
     test_dir.mkdir(exist_ok=True)
+
     test_file = test_dir / "under-huven-disk-test.bin"
     chunk = b"0" * 1024 * 1024
     delay = experiment.get("delay", 0)
