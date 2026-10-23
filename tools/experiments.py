@@ -49,7 +49,10 @@ def run_stress_command(command: list[str], duration: int) -> None:
         )
         return
 
-    process = subprocess.Popen(command)
+    process = subprocess.Popen(
+        command,stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
 
     with Progress(
         TextColumn("[bold cyan]{task.description}"),
@@ -83,8 +86,34 @@ def run_command_experiment(experiment: dict) -> None:
     duration = experiment["duration"]
     look_for = experiment["look_for"]
 
+    if explanation_key == "cpu":
+        cpu_count = psutil.cpu_count(logical=True) or 1
+        load_ratio = experiment.get("load_ratio", 0.8)
+
+        workers = max(1, int(cpu_count * load_ratio))
+
+        command = [
+            "stress",
+            "--cpu",
+            str(workers),
+            "--timeout",
+            str(duration),
+        ]
+    else:
+        command = experiment["command"]
+
     console.clear()
     console.print(show_test_intro(title, explanation, impacts))
+
+    if explanation_key == "cpu":
+        console.print(
+            f"\n[bold cyan]Systen:[/bold cyan] "
+            f"{cpu_count} CPU-kärnor, "
+        )
+        console.print(
+            f"[bold cyan]Workers:[/bold cyan] "
+            f"{workers} workers ({load_ratio:.0%})"
+        )
     console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
 
     run_stress_command(command, duration)
