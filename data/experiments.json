@@ -30,7 +30,7 @@
     "title": "Disk-test",
     "explanation_key": "disk",
     "duration": 15,
-    "size_mb": 64,
+    "max_mb":1024,
     "look_for": "En tillfällig fil skrivs till disken och tas sedan bort.",
     "impacts": [
       ["CPU", 1, "Processorn arbetar lite när filen skapas."],

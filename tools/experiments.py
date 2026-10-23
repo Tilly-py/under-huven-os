@@ -3,6 +3,7 @@ import shutil
 import subprocess
 import time
 from pathlib import Path
+import os
 
 import psutil
 from rich.console import Console
@@ -139,7 +140,6 @@ def run_command_experiment(experiment: dict) -> None:
         )
     console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
 
-
     run_stress_command(command, duration)
 
 
@@ -152,40 +152,103 @@ def run_disk_experiment(experiment: dict) -> None:
     explanation_key = experiment["explanation_key"]
     explanation = EXPLANATIONS[explanation_key]
     impacts = experiment["impacts"]
-    size_mb = experiment["size_mb"]
+
+    duration = experiment.get("duration", 15)
+    max_mb = experiment.get("max_mb", 1024)
     look_for = experiment["look_for"]
 
     console.clear()
     console.print(show_test_intro(title, explanation, impacts))
-    console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
+    console.print(f"\n[bold yellow]Titta efter:[/bold yellow] {look_for}\n")
 
-    test_file = Path("/tmp/under-huven-disk-test.bin")
-    chunk = b"0" * 1024 * 1024
+    test_dir = Path.home() / ".under-huven"
+    test_dir.mkdir(exist_ok=True)
 
-    console.print(f"[bold yellow]Skriver:[/bold yellow] {size_mb} mb till {test_file}")
+    test_file = test_dir / "disk-test.bin"
+
+    chunk_size_mb = 4
+    chunk = b"0" * (chunk_size_mb * 1024 * 1024)
+
+    disk = psutil.disk_usage(test_dir)
+    free_mb = int(disk.free / (1024 * 1024))
+
+    if free_mb < 1024:
+        console.print(
+            "[bold red]För lite ledigt diskutrymme för disk-testet.[/bold red]"
+        )
+        return
+
+    target_mb = min(
+        max_mb,
+        int(free_mb * 0.05),
+    )
+
+    console.print(f"[cyan]Ledigt utrymme:[/cyan] {free_mb} MB")
+    console.print(f"[yellow]Maximal teststorlek:[/yellow] {target_mb} MB")
+    console.print(f"[yellow]Maximal testtid:[/yellow] {duration} sekunder\n")
+
+    io_before = psutil.disk_io_counters()
+    start_time = time.perf_counter()
+
+    written_mb = 0
 
     try:
-        with Progress(
-            TextColumn("[bold cyan]{task.description}"),
-            BarColumn(bar_width=30),
-            TextColumn("[bold yellow] {task.completed:.0f}/{task.total:.0f} MB"),
-            console=console,
-        ) as progress:
-            task = progress.add_task("Skriver testfil", total=size_mb)
+        with test_file.open("wb") as file:
+            with Progress(
+                TextColumn("[bold cyan]{task.description}"),
+                BarColumn(bar_width=30),
+                TextColumn("[bold yellow]{task.completed:.0f}/{task.total:.0f} MB"),
+                console=console,
+            ) as progress:
+                task = progress.add_task(
+                    "Skriver till disk",
+                    total=target_mb,
+                )
 
-            with test_file.open("wb") as file:
-                for _ in range(size_mb):
+                while written_mb < target_mb:
+                    elapsed = time.perf_counter() - start_time
+
+                    if elapsed >= duration:
+                        break
+
                     file.write(chunk)
-                    progress.update(task, advance=1)
 
-        disk = psutil.disk_usage("/")
+                    written_mb += chunk_size_mb
+
+                    progress.update(
+                        task,
+                        advance=chunk_size_mb,
+                    )
+
+                    if written_mb % 64 == 0:
+                        file.flush()
+                        os.fsync(file.fileno())
+
+            file.flush()
+            os.fsync(file.fileno())
+
+        elapsed = time.perf_counter() - start_time
+        io_after = psutil.disk_io_counters()
+
+        speed = written_mb / elapsed if elapsed > 0 else 0
+
         console.print("\n[bold green]Klart.[/bold green]")
-        console.print(f"Diskanvändning just nu: [bold cyan]{disk.percent}%[/bold cyan]")
+        console.print(f"[cyan]Skrivet:[/cyan] {written_mb} MB")
+        console.print(f"[cyan]Tid:[/cyan] {elapsed:.1f} sekunder")
+        console.print(f"[cyan]Genomsnittlig skrivhastighet:[/cyan] {speed:.1f} MB/s")
+
+        if io_before and io_after:
+            actual_written = (io_after.write_bytes - io_before.write_bytes) / (
+                1024 * 1024
+            )
+
+            console.print(f"[cyan]Systemets disk-I/O:[/cyan] +{actual_written:.1f} MB")
 
     finally:
         if test_file.exists():
             test_file.unlink()
-            console.print("[cyan]Testfilen togs bort igen.[/cyan]")
+
+        console.print("[dim]Testfilen togs bort igen.[/dim]")
 
 
 def show_experiment_menu() -> None:
