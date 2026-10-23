@@ -9,6 +9,7 @@ import psutil
 from rich.console import Console
 from rich.panel import Panel
 from rich.progress import BarColumn, Progress, TextColumn, TimeRemainingColumn
+from rich.table import Table
 
 from tools.explanations import CPU_EXPLANATION, DISK_EXPLANATION, RAM_EXPLANATION
 from tools.visualizer import show_test_intro
