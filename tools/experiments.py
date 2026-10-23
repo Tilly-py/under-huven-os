@@ -50,7 +50,8 @@ def run_stress_command(command: list[str], duration: int) -> None:
         return
 
     process = subprocess.Popen(
-        command,stdout=subprocess.DEVNULL,
+        command,
+        stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
 
@@ -82,7 +83,6 @@ def run_command_experiment(experiment: dict) -> None:
     explanation_key = experiment["explanation_key"]
     explanation = EXPLANATIONS[explanation_key]
     impacts = experiment["impacts"]
-    command = experiment["command"]
     duration = experiment["duration"]
     look_for = experiment["look_for"]
 
@@ -106,13 +106,9 @@ def run_command_experiment(experiment: dict) -> None:
     console.print(show_test_intro(title, explanation, impacts))
 
     if explanation_key == "cpu":
+        console.print(f"\n[bold cyan]Systen:[/bold cyan] {cpu_count} CPU-kärnor, ")
         console.print(
-            f"\n[bold cyan]Systen:[/bold cyan] "
-            f"{cpu_count} CPU-kärnor, "
-        )
-        console.print(
-            f"[bold cyan]Workers:[/bold cyan] "
-            f"{workers} workers ({load_ratio:.0%})"
+            f"[bold cyan]Workers:[/bold cyan] {workers} workers ({load_ratio:.0%})"
         )
     console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
 
