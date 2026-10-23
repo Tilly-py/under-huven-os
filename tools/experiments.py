@@ -122,7 +122,7 @@ def run_command_experiment(experiment: dict) -> None:
         ]
 
     else:
-        command = experiment("command")
+        command = experiment["command"]
 
     console.clear()
     console.print(show_test_intro(title, explanation, impacts))
