@@ -6,6 +6,8 @@ from tools.live_dashboard import show_live_dashboard
 from tools.ui import show_header, show_menu, print_error
 from tools.experiments import show_experiment_menu
 
+def wait_for_enter():
+    input("\n[ ENTER ] Tryck på Enter för att fortsätta...")
 
 def main():
     first_run = True
@@ -16,19 +18,23 @@ def main():
         show_menu()
 
         choice = input("\n> ").strip()
-        
+
         if choice == "1":
             show_live_dashboard()
         elif choice == "2":
             show_experiment_menu()
         elif choice == "3":
             get_system_info()
+            wait_for_enter()
         elif choice == "4":
             show_cpu_usage()
+            wait_for_enter()
         elif choice == "5":
             show_memory_usage()
+            wait_for_enter()
         elif choice == "6":
             show_disk_info()
+            wait_for_enter()
         elif choice == "7":
             print("Exiting Under Huven OS!")
             break

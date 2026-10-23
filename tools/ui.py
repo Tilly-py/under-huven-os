@@ -27,7 +27,7 @@ def print_logo_animated(delay: float = 0.002) -> None:
             console.print(
                 char,
                 end="",
-                style="bold cyan",
+                style="bold amber",
                 highlight=False,
             )
             time.sleep(delay)
@@ -56,7 +56,7 @@ def show_header(animated: bool = False) -> None:
     status.append("●", style="yellow")
 
     subtitle = Text(
-        "SYSTEM DIAGNOSTICS // UNDER HUVEN WORKSHOP",
+        "UNDER HUVEN WORKSHOP",
         style="dim bright_white",
     )
 
@@ -98,43 +98,43 @@ def show_menu() -> None:
     )
 
     table.add_row(
-        "[01]",
+        "[1]",
         "LIVE DASHBOARD",
         "Övervaka CPU, RAM och disk i realtid",
     )
 
     table.add_row(
-        "[02]",
+        "[2]",
         "EXPERIMENT MODE",
         "Kör CPU-, RAM- och diskexperiment",
     )
 
     table.add_row(
-        "[03]",
+        "[3]",
         "SYSTEM INFO",
         "Visa hårdvara och operativsystem",
     )
 
     table.add_row(
-        "[04]",
+        "[4]",
         "CPU STATUS",
         "Visa aktuell processorbelastning",
     )
 
     table.add_row(
-        "[05]",
+        "[5]",
         "MEMORY STATUS",
         "Visa aktuell minnesanvändning",
     )
 
     table.add_row(
-        "[06]",
+        "[6]",
         "DISK STATUS",
         "Visa information om lagringen",
     )
 
     table.add_row(
-        "[07]",
+        "[7]",
         "SHUTDOWN",
         "Avsluta Under Huven OS",
     )
