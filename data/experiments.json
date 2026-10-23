@@ -15,11 +15,12 @@
   "ram": {
     "title": "RAM-test",
     "explanation_key": "ram",
-    "command": ["stress", "--vm", "1", "--vm-bytes", "256M", "--timeout", "15"],
+    "load_ratio": 0.3,
+    "max_mb": 4096,
     "duration": 15,
     "look_for": "RAM-användningen bör öka medan testet körs.",
     "impacts": [
-      ["CPU", 1, "Processorn hjälper till lite."],
+      ["CPU", 2, "Processorn arbetar när minnet reserveras och hanteras."],
       ["RAM", 3, "Extra arbetsminne reserveras tillfälligt."],
       ["Disk", 0, "Nästan inget skrivs till lagringen."],
       ["Process", 2, "Programmet stress startas som en process."]

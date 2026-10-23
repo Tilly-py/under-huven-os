@@ -99,18 +99,46 @@ def run_command_experiment(experiment: dict) -> None:
             "--timeout",
             str(duration),
         ]
+    elif explanation_key == "ram":
+        memory = psutil.virtual_memory()
+
+        available_mb = int(memory.available / (1024 * 1024))
+        load_ratio = experiment.get("load_ratio", 0.30)
+        max_mb = experiment.get("max_mb", 4096)
+
+        ram_mb = max(64, min(int(available_mb * load_ratio), max_mb))
+
+        command = [
+            "stress",
+            "--vm",
+            "1",
+            "--vm-bytes",
+            f"{ram_mb}M",
+            "--vm-keep",
+            "--timeout",
+            str(duration),
+        ]
+
     else:
-        command = experiment["command"]
+        command = experiment("command")
 
     console.clear()
     console.print(show_test_intro(title, explanation, impacts))
 
     if explanation_key == "cpu":
-        console.print(f"\n[bold cyan]Systen:[/bold cyan] {cpu_count} CPU-kärnor, ")
+        console.print(f"\n[bold cyan]System:[/bold cyan] {cpu_count} CPU-kärnor, ")
         console.print(
             f"[bold cyan]Workers:[/bold cyan] {workers} workers ({load_ratio:.0%})"
         )
+
+    elif explanation_key == "ram":
+        console.print(f"\n[bold cyan]Tillgängligt RAM:[/bold cyan] {available_mb} MB")
+        console.print(
+            f"[bold yellow]Testet reserverar:[/bold yellow] "
+            f"{ram_mb} MB ({load_ratio:.0%} av tillgängligt RAM)"
+        )
     console.print(f"\n[bold yellow]Titta efter:[/bold yellow]{look_for}\n")
+
 
     run_stress_command(command, duration)
 
