@@ -27,7 +27,7 @@ def print_logo_animated(delay: float = 0.002) -> None:
             console.print(
                 char,
                 end="",
-                style="bold amber",
+                style="bold #FFBF00",
                 highlight=False,
             )
             time.sleep(delay)
