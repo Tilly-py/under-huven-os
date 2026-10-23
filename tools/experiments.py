@@ -260,23 +260,92 @@ def show_experiment_menu() -> None:
 
     while True:
         console.clear()
-        console.print("[bold cyan]Experimentläge[/bold cyan]\n")
-        console.print("[1] CPU-test")
-        console.print("[2] RAM-test")
-        console.print("[3] Disk-test")
-        console.print("[4] Tillbaka")
 
-        choice = input("\nVälj experiment: ").strip()
+        console.print(
+            Panel(
+                "[bold cyan]EXPERIMENT MODE[/bold cyan]\n"
+                "[dim]Belasta en komponent och följ effekten i dashboarden[/dim]",
+                border_style="cyan",
+                padding=(1, 2),
+            )
+        )
+
+        table = Table(
+            show_header=False,
+            box=None,
+            padding=(0, 2),
+            expand=True,
+        )
+
+        table.add_column(
+            "Val",
+            style="bold yellow",
+            width=6,
+            no_wrap=True,
+        )
+
+        table.add_column(
+            "Experiment",
+            style="bold bright_white",
+            width=18,
+        )
+
+        table.add_column(
+            "Beskrivning",
+            style="dim",
+        )
+
+        table.add_row(
+            "[01]",
+            "CPU STRESS",
+            "Belasta processorn och följ CPU-användningen",
+        )
+
+        table.add_row(
+            "[02]",
+            "MEMORY STRESS",
+            "Reservera RAM och följ minnesanvändningen",
+        )
+
+        table.add_row(
+            "[03]",
+            "DISK I/O",
+            "Skriv testdata och följ diskaktiviteten",
+        )
+
+        table.add_row(
+            "[04]",
+            "BACK",
+            "Tillbaka till huvudmenyn",
+        )
+
+        console.print(
+            Panel(
+                table,
+                title="[bold cyan] TEST MODULES [/bold cyan]",
+                subtitle="[dim]Välj 1–4[/dim]",
+                border_style="bright_blue",
+                padding=(1, 1),
+            )
+        )
+
+        choice = input("\n> Välj experiment: ").strip()
 
         if choice == "1":
             run_command_experiment(experiments["cpu"])
+
         elif choice == "2":
             run_command_experiment(experiments["ram"])
+
         elif choice == "3":
             run_disk_experiment(experiments["disk"])
+
         elif choice == "4":
             break
-        else:
-            console.print("[bold red]Ogiltigt val. Försök igen.[/bold red]")
 
-        input("\nTryck Enter för att fortsätta...")
+        else:
+            console.print("\n[bold red][ ERROR ][/bold red] Ogiltigt val. Välj 1–4.")
+            input("\n[ ENTER ] Försök igen...")
+            continue
+
+        input("\n[ ENTER ] Tillbaka till experimentmenyn...")

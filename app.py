@@ -8,11 +8,15 @@ from tools.experiments import show_experiment_menu
 
 
 def main():
+    first_run = True
     while True:
-        show_header()
-        show_menu()
-        choice = input("Enter Your Choice: ")
+        show_header(animated=first_run)
+        first_run = False
 
+        show_menu()
+
+        choice = input("\n> ").strip()
+        
         if choice == "1":
             show_live_dashboard()
         elif choice == "2":

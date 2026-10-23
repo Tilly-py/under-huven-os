@@ -1,43 +1,175 @@
-from rich.console import Console
+import time
+
+from rich.console import Console, Group
 from rich.panel import Panel
-from rich.text import Text
 from rich.table import Table
+from rich.text import Text
 
 console = Console()
 
 
-def show_header():
-    title = Text("Under Huven OS", style="bold cyan")
-    subtitle = Text("Visualisera CPU, RAM, disk och processer", style="bold green")
+LOGO = r"""
+ _   _           _             _   _
+| | | |_ __   __| | ___ _ __  | | | |_   ___   _____ _ __
+| | | | '_ \ / _` |/ _ \ '__| | |_| | | | \ \ / / _ \ '_ \
+| |_| | | | | (_| |  __/ |    |  _  | |_| |\ V /  __/ | | |
+ \___/|_| |_|\__,_|\___|_|    |_| |_|\__,_| \_/ \___|_| |_|
 
-    panel = Panel.fit(f"{title}\n{subtitle}", border_style="cyan", padding=(1, 4))
-    console.print(panel)
-
-
-def show_menu():
-    table = Table(title="Main Menu", show_header=False, border_style="cyan")
-
-    table.add_column("Val", style="bold yellow")
-    table.add_column("Funktion", style="white")
-
-    table.add_row("[1]", "Live dashboard")
-    table.add_row("[2]", "Kör experiment")
-    table.add_row("[3]", "Systeminformation")
-    table.add_row("[4]", "Visa CPU-användning")
-    table.add_row("[5]", "Visa minnesanvändning")
-    table.add_row("[6]", "Visa diskinformation")
-    table.add_row("[7]", "Avsluta")
-
-    console.print(table)
+                              O S
+"""
 
 
-def print_success(message):
-    console.print(f"[bold green]✓ {message}[/bold green]")
+def print_logo_animated(delay: float = 0.002) -> None:
+    """Prints the ASCII logo with a retro terminal animation."""
+
+    for line in LOGO.splitlines():
+        for char in line:
+            console.print(
+                char,
+                end="",
+                style="bold cyan",
+                highlight=False,
+            )
+            time.sleep(delay)
+
+        console.print()
 
 
-def print_error(message):
-    console.print(f"[bold red]✗ {message}[/bold red]")
+def show_header(animated: bool = False) -> None:
+    """Shows the Under Huven OS header."""
+
+    console.clear()
+
+    if animated:
+        print_logo_animated()
+    else:
+        console.print(LOGO, style="bold cyan", highlight=False)
+
+    status = Text()
+    status.append(" CPU ", style="bold red")
+    status.append("●", style="red")
+    status.append("   RAM ", style="bold green")
+    status.append("●", style="green")
+    status.append("   DISK ", style="bold magenta")
+    status.append("●", style="magenta")
+    status.append("   PROCESSER ", style="bold yellow")
+    status.append("●", style="yellow")
+
+    subtitle = Text(
+        "SYSTEM DIAGNOSTICS // UNDER HUVEN WORKSHOP",
+        style="dim bright_white",
+    )
+
+    console.print(
+        Panel(
+            Group(status, subtitle),
+            border_style="cyan",
+            padding=(0, 2),
+        )
+    )
 
 
-def print_info(message):
-    console.print(f"[bold cyan]ℹ {message}[/bold cyan]")
+def show_menu() -> None:
+    """Shows the main menu."""
+
+    table = Table(
+        show_header=False,
+        box=None,
+        padding=(0, 2),
+        expand=True,
+    )
+
+    table.add_column(
+        "Val",
+        style="bold yellow",
+        width=6,
+        no_wrap=True,
+    )
+
+    table.add_column(
+        "Funktion",
+        style="bold bright_white",
+        width=24,
+    )
+
+    table.add_column(
+        "Beskrivning",
+        style="dim",
+    )
+
+    table.add_row(
+        "[01]",
+        "LIVE DASHBOARD",
+        "Övervaka CPU, RAM och disk i realtid",
+    )
+
+    table.add_row(
+        "[02]",
+        "EXPERIMENT MODE",
+        "Kör CPU-, RAM- och diskexperiment",
+    )
+
+    table.add_row(
+        "[03]",
+        "SYSTEM INFO",
+        "Visa hårdvara och operativsystem",
+    )
+
+    table.add_row(
+        "[04]",
+        "CPU STATUS",
+        "Visa aktuell processorbelastning",
+    )
+
+    table.add_row(
+        "[05]",
+        "MEMORY STATUS",
+        "Visa aktuell minnesanvändning",
+    )
+
+    table.add_row(
+        "[06]",
+        "DISK STATUS",
+        "Visa information om lagringen",
+    )
+
+    table.add_row(
+        "[07]",
+        "SHUTDOWN",
+        "Avsluta Under Huven OS",
+    )
+
+    console.print(
+        Panel(
+            table,
+            title="[bold cyan] SYSTEM MENU [/bold cyan]",
+            subtitle="[dim]Välj modul med 1–7[/dim]",
+            border_style="bright_blue",
+            padding=(1, 1),
+        )
+    )
+
+    console.print(
+        "[dim cyan]"
+        "────────────────────────────────────────────────────────────"
+        "[/dim cyan]"
+    )
+
+
+def print_success(message: str) -> None:
+    console.print(f"[bold green] [ OK ] [/bold green] {message}")
+
+
+def print_error(message: str) -> None:
+    console.print(
+        Panel(
+            f"[bold red]{message}[/bold red]",
+            title="[bold red] ERROR [/bold red]",
+            border_style="red",
+            padding=(0, 2),
+        )
+    )
+
+
+def print_info(message: str) -> None:
+    console.print(f"[bold cyan] [ INFO ] [/bold cyan] {message}")
